@@ -9,7 +9,6 @@ import info.rnowak.urlcut.domain.Url
 import spray.routing.SimpleRoutingApp
 import info.rnowak.urlcut.domain.UrlProtocol._
 import spray.httpx.SprayJsonSupport._
-import scala.language.implicitConversions
 
 object UrlCut extends App with SimpleRoutingApp {
   implicit val actorSystem = ActorSystem("UrlCut-system")
@@ -35,8 +34,6 @@ object UrlCut extends App with SimpleRoutingApp {
       }
     }
   }
-
-  implicit def stringToUrl(s: String): Url = Url(s)
 
   def getHashForUrl(url: Url): String = Hashing.murmur3_32().hashString(url.url, Charset.forName("UTF-8")).toString
 }
