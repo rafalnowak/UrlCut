@@ -5,14 +5,17 @@ version := "0.0.1-SNAPSHOT"
 scalaVersion := "2.11.2"
 
 libraryDependencies ++= {
-  val akkaV = "2.3.5"
-  val sprayV = "1.3.1"
+  val akkaVersion = "2.3.5"
+  val sprayVersion = "1.3.1"
   Seq(
-    "io.spray" %% "spray-can" % sprayV,
-    "io.spray" %% "spray-routing" % sprayV,
-    "io.spray" %% "spray-testkit" % sprayV % "test",
-    "com.typesafe.akka" %% "akka-actor" % akkaV,
-    "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
+    "io.spray" %% "spray-can" % sprayVersion,
+    "io.spray" %% "spray-routing" % sprayVersion,
+    "io.spray" %% "spray-routing" % sprayVersion,
+    "io.spray" %% "spray-json" % "1.2.6",
+    "io.spray" %% "spray-testkit" % sprayVersion % "test",
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
+    "net.debasishg" %% "redisclient" % "2.13",
     "org.specs2" %% "specs2-core" % "2.3.11" % "test"
   )
 }
