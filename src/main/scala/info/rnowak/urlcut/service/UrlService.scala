@@ -7,9 +7,10 @@ import com.google.common.hash.Hashing
 import com.redis.RedisClient
 import info.rnowak.urlcut.domain.Url
 import spray.http.StatusCodes
-import spray.routing.HttpService
+import spray.routing.{ExceptionHandler, HttpService}
 import info.rnowak.urlcut.domain.UrlProtocol._
 import spray.httpx.SprayJsonSupport._
+import spray.util.LoggingContext
 
 class UrlServiceActor extends Actor with UrlService {
   def actorRefFactory = context
@@ -20,10 +21,23 @@ class UrlServiceActor extends Actor with UrlService {
 trait UrlService extends HttpService {
   val redisClient = new RedisClient(host = "localhost", port = 6379)
 
+  implicit def urlExceptionHandler(implicit log: LoggingContext) = {
+    ExceptionHandler {
+      case e:
+        UrlNotFoundException => {
+          ctx => {
+            log.error("Url not found for request {}", ctx.request)
+            ctx.complete(StatusCodes.NotFound, "Url not found")
+          }
+        }
+    }
+  }
+
   val urlRoute =
     get {
       path(Segment) { url =>
-        redirect(redisClient.get(url).get, StatusCodes.PermanentRedirect)
+        val targetUrl = redisClient.get(url).getOrElse { throw new UrlNotFoundException() }
+        redirect(targetUrl, StatusCodes.PermanentRedirect)
       }
     } ~
     post {
