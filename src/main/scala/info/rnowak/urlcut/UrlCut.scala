@@ -6,6 +6,7 @@ import akka.actor.ActorSystem
 import com.google.common.hash.Hashing
 import com.redis.RedisClient
 import info.rnowak.urlcut.domain.Url
+import spray.http.StatusCodes
 import spray.routing.SimpleRoutingApp
 import info.rnowak.urlcut.domain.UrlProtocol._
 import spray.httpx.SprayJsonSupport._
@@ -16,10 +17,8 @@ object UrlCut extends App with SimpleRoutingApp {
 
   startServer(interface = "localhost", port = 8080) {
     get {
-      path("url" / Segment) { url =>
-        complete {
-          redisClient.get(url).get
-        }
+      path(Segment) { url =>
+        redirect(redisClient.get(url).get, StatusCodes.PermanentRedirect)
       }
     } ~
     post {
